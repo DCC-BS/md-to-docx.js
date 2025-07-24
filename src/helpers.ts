@@ -901,10 +901,8 @@ export async function processImage(
   style: Style
 ): Promise<Paragraph[]> {
   try {
-    console.log(`Starting image processing for URL: ${imageUrl}`);
 
     const response = await fetch(imageUrl);
-    console.log(`Fetch response status: ${response.status}`);
 
     if (!response.ok) {
       throw new Error(
@@ -980,10 +978,6 @@ export function processParagraph(text: string, style: Style): Paragraph {
       : AlignmentType.LEFT
     : AlignmentType.LEFT;
 
-  // Log the alignment for debugging
-  console.log(
-    `Paragraph alignment: ${alignment}, Style alignment: ${style.paragraphAlignment}`
-  );
 
   // Only apply indent for justified text
   const indent =

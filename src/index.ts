@@ -386,19 +386,18 @@ export async function convertMarkdownToDocx(
         const imageMatch = trimmedLine.match(/!\[([^\]]*)\]\(([^)]+)\)/);
         if (imageMatch) {
           const [_, altText, imageUrl] = imageMatch;
-          console.log(`Found image in markdown: ${imageUrl}`);
+          
 
           // Process images synchronously to ensure they're fully loaded
           try {
-            console.log(`Starting image processing for: ${imageUrl}`);
+            
             const imageParagraphs = await processImage(
               altText,
               imageUrl,
               style
             );
-            console.log(
-              `Successfully processed image, adding ${imageParagraphs.length} paragraphs`
-            );
+            
+
             docChildren.push(...imageParagraphs);
           } catch (error) {
             console.error(

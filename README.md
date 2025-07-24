@@ -4,6 +4,12 @@ This is a fork form [md-to-docx](https://github.com/MohtashamMurshid/md-to-docx)
 - Images now only work in the browser, not only in Node.js
 - Images use their original size, not a fixed size of 200x200
 
+To install this fork, use the following command:
+
+```bash
+bun add git+https://github.com/DCC-BS/md-to-docx.js#v2.0.2
+```
+
 
 A powerful TypeScript module that converts Markdown text to Microsoft Word (.docx) documents with support for various Markdown features. Perfect for both Node.js and browser environments.
 
