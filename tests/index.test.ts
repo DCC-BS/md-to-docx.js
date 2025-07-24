@@ -10,9 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const outputDir = path.join(__dirname, "..", "test-output");
 
 // Create output directory if it doesn't exist
-if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir);
-}
+fs.mkdirSync(outputDir, { recursive: true });
 
 // Increase timeout for tests with image processing
 jest.setTimeout(30000);

@@ -9,9 +9,8 @@ const __dirname = path.dirname(__filename);
 
 // Create output directory if it doesn't exist
 const outputDir = path.join(__dirname, "..", "test-output");
-if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir, { recursive: true });
-}
+fs.mkdirSync(outputDir, { recursive: true });
+
 
 describe("Heading Alignment Tests", () => {
   it("should apply default left alignment to all headings", async () => {

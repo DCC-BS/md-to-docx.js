@@ -9,10 +9,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Create output directory if it doesn't exist
-const outputDir = path.join(__dirname, "output");
-if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir);
-}
+const outputDir = path.join(__dirname, "..", "test-output");
+fs.mkdirSync(outputDir, { recursive: true });
+
 
 describe("Markdown Newline Handling", () => {
   it("should handle various newline scenarios correctly", async () => {
