@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const outputDir = path.join(__dirname, "..", "test-output");
 
@@ -26,6 +27,22 @@ This is a test with an embedded image.
 
 ![Test Image](https://picsum.photos/200/200)
 `;
+    const mockOnLoad = jest.fn();
+    (global as any).Image = class MockImage {
+      onload: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      src = '';
+      width = 2200;
+      height = 1000;
+      
+      constructor() {
+        setTimeout(() => {
+          if (this.onload) {
+            this.onload();
+          }
+        }, 0);
+      }
+    };
 
     const options: Options = {
       documentType: "document" as const,

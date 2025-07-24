@@ -856,6 +856,38 @@ export function createLinkParagraph(text: string, url: string): Paragraph {
   });
 }
 
+function calculateImageSize(blob: Blob): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(blob);
+    img.src = url;
+
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+
+      const maxWidth = 650;
+      const maxHeight = 920;
+      const originalWidth = img.width;
+      const originalHeight = img.height;
+
+      // Calculate the scaling factor to maintain aspect ratio
+      const widthScale = maxWidth / originalWidth;
+      const heightScale = maxHeight / originalHeight;
+      const scale = Math.min(widthScale, heightScale, 1); // Don't scale up
+
+      const width = Math.round(originalWidth * scale);
+      const height = Math.round(originalHeight * scale);
+
+      resolve({ width, height });
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Failed to load image"));
+    };
+  });
+}
+
 /**
  * Processes an image and returns appropriate paragraph
  * @param altText - The alt text
@@ -880,11 +912,10 @@ export async function processImage(
       );
     }
 
-    const arrayBuffer = await response.arrayBuffer();
-    console.log(`ArrayBuffer size: ${arrayBuffer.byteLength} bytes`);
-
-    const buffer = Buffer.from(arrayBuffer);
-    console.log(`Buffer size: ${buffer.length} bytes`);
+    const blob = await response.blob();
+    const buffer = await blob.arrayBuffer();
+    
+    const { width, height } = await calculateImageSize(blob);
 
     // Create a paragraph with just the image, no hyperlink
     return [
@@ -893,8 +924,8 @@ export async function processImage(
           new ImageRun({
             data: buffer,
             transformation: {
-              width: 200,
-              height: 200,
+              width: width,
+              height: height,
             },
             type: "jpg",
           }),
