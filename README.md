@@ -1,10 +1,11 @@
 # Markdown to DOCX Converter
 
+This is a fork form [md-to-docx](https://github.com/MohtashamMurshid/md-to-docx) by [Mohtasham Murshid](https://github.com/MohtashamMurshid). The following changes where made:
+- Images now only work in the browser, not only in Node.js
+- Images use their original size, not a fixed size of 200x200
+
+
 A powerful TypeScript module that converts Markdown text to Microsoft Word (.docx) documents with support for various Markdown features. Perfect for both Node.js and browser environments.
-
-## Github Repo (Open Source)
-
-[https://github.com/MohtashamMurshid/md-to-docx]
 
 ## Features
 
