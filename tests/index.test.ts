@@ -1,10 +1,9 @@
-import { describe, it, expect, jest } from "@jest/globals";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { describe, expect, it, jest } from "@jest/globals";
 import { convertMarkdownToDocx } from "../src/index";
-import { Options } from "../src/types";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
+import type { Options } from "../src/types";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const outputDir = path.join(__dirname, "..", "test-output");
@@ -16,64 +15,63 @@ fs.mkdirSync(outputDir, { recursive: true });
 jest.setTimeout(30000);
 
 describe("convertMarkdownToDocx", () => {
-  it("should handle images correctly", async () => {
-    console.log("Starting image test");
+    it("should handle images correctly", async () => {
+        console.log("Starting image test");
 
-    const markdown = `
+        const markdown = `
 # Image Test
 This is a test with an embedded image.
 
 ![Test Image](https://picsum.photos/200/200)
 `;
-    const mockOnLoad = jest.fn();
-    (global as any).Image = class MockImage {
-      onload: (() => void) | null = null;
-      onerror: (() => void) | null = null;
-      src = '';
-      width = 2200;
-      height = 1000;
-      
-      constructor() {
-        setTimeout(() => {
-          if (this.onload) {
-            this.onload();
-          }
-        }, 0);
-      }
-    };
+        (global as any).Image = class MockImage {
+            onload: (() => void) | null = null;
+            onerror: (() => void) | null = null;
+            src = "";
+            width = 2200;
+            height = 1000;
 
-    const options: Options = {
-      documentType: "document" as const,
-      style: {
-        titleSize: 32,
-        headingSpacing: 240,
-        paragraphSpacing: 240,
-        lineSpacing: 1.15,
-        heading1Alignment: "CENTER", // Test heading alignment with image
-      },
-    };
+            constructor() {
+                setTimeout(() => {
+                    if (this.onload) {
+                        this.onload();
+                    }
+                }, 0);
+            }
+        };
 
-    console.log("Converting markdown to docx");
-    const buffer = await convertMarkdownToDocx(markdown, options);
-    console.log("Conversion complete, buffer size:", await buffer.size);
+        const options: Options = {
+            documentType: "document" as const,
+            style: {
+                titleSize: 32,
+                headingSpacing: 240,
+                paragraphSpacing: 240,
+                lineSpacing: 1.15,
+                heading1Alignment: "CENTER", // Test heading alignment with image
+            },
+        };
 
-    // Save the file for manual inspection
-    const outputPath = path.join(outputDir, "image-test.docx");
-    console.log("Saving file to:", outputPath);
+        console.log("Converting markdown to docx");
+        const buffer = await convertMarkdownToDocx(markdown, options);
+        console.log("Conversion complete, buffer size:", await buffer.size);
 
-    const arrayBuffer = await buffer.arrayBuffer();
-    fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
-    console.log("File saved successfully");
+        // Save the file for manual inspection
+        const outputPath = path.join(outputDir, "image-test.docx");
+        console.log("Saving file to:", outputPath);
 
-    // Verify the buffer is not empty
-    const size = await buffer.size;
-    expect(size).toBeGreaterThan(0);
-  });
+        const arrayBuffer = await buffer.arrayBuffer();
+        fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
+        console.log("File saved successfully");
 
-  it("should handle code blocks correctly", async () => {
-    console.log("Starting code block test");
+        // Verify the buffer is not empty
+        const size = await buffer.size;
+        expect(size).toBeGreaterThan(0);
+    });
 
-    const markdown = `
+    it("should handle code blocks correctly", async () => {
+        console.log("Starting code block test");
+
+        const markdown = `
 # Code Block Test
 This is a test with various code blocks.
 
@@ -112,38 +110,38 @@ def calculate_fibonacci(n: int) -> list[int]:
 \`\`\`
 `;
 
-    const options: Options = {
-      documentType: "document" as const,
-      style: {
-        titleSize: 32,
-        headingSpacing: 240,
-        paragraphSpacing: 240,
-        lineSpacing: 1.15,
-        heading1Alignment: "CENTER",
-        heading2Alignment: "LEFT",
-        codeBlockSize: 20,
-      },
-    };
+        const options: Options = {
+            documentType: "document" as const,
+            style: {
+                titleSize: 32,
+                headingSpacing: 240,
+                paragraphSpacing: 240,
+                lineSpacing: 1.15,
+                heading1Alignment: "CENTER",
+                heading2Alignment: "LEFT",
+                codeBlockSize: 20,
+            },
+        };
 
-    console.log("Converting markdown to docx");
-    const buffer = await convertMarkdownToDocx(markdown, options);
-    console.log("Conversion complete, buffer size:", await buffer.size);
+        console.log("Converting markdown to docx");
+        const buffer = await convertMarkdownToDocx(markdown, options);
+        console.log("Conversion complete, buffer size:", await buffer.size);
 
-    // Save the file for manual inspection
-    const outputPath = path.join(outputDir, "code-block-test.docx");
-    console.log("Saving file to:", outputPath);
+        // Save the file for manual inspection
+        const outputPath = path.join(outputDir, "code-block-test.docx");
+        console.log("Saving file to:", outputPath);
 
-    const arrayBuffer = await buffer.arrayBuffer();
-    fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
-    console.log("File saved successfully");
+        const arrayBuffer = await buffer.arrayBuffer();
+        fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
+        console.log("File saved successfully");
 
-    // Verify the buffer is not empty
-    const size = await buffer.size;
-    expect(size).toBeGreaterThan(0);
-  });
+        // Verify the buffer is not empty
+        const size = await buffer.size;
+        expect(size).toBeGreaterThan(0);
+    });
 
-  it("should convert full markdown to docx with various alignments", async () => {
-    const markdown = `
+    it("should convert full markdown to docx with various alignments", async () => {
+        const markdown = `
 # Test Document
 ## Subtitle
 This is a paragraph with **bold** and *italic* text.
@@ -167,35 +165,35 @@ This is a paragraph with **bold** and *italic* text.
 COMMENT: This is a comment
 `;
 
-    const options: Options = {
-      documentType: "document" as const,
-      style: {
-        titleSize: 32,
-        headingSpacing: 240,
-        paragraphSpacing: 240,
-        lineSpacing: 1.15,
-        // Test different alignments
-        heading1Alignment: "CENTER",
-        heading2Alignment: "RIGHT",
-        paragraphAlignment: "JUSTIFIED",
-        blockquoteAlignment: "CENTER",
-      },
-    };
+        const options: Options = {
+            documentType: "document" as const,
+            style: {
+                titleSize: 32,
+                headingSpacing: 240,
+                paragraphSpacing: 240,
+                lineSpacing: 1.15,
+                // Test different alignments
+                heading1Alignment: "CENTER",
+                heading2Alignment: "RIGHT",
+                paragraphAlignment: "JUSTIFIED",
+                blockquoteAlignment: "CENTER",
+            },
+        };
 
-    const buffer = await convertMarkdownToDocx(markdown, options);
+        const buffer = await convertMarkdownToDocx(markdown, options);
 
-    // Save the file for manual inspection
-    const outputPath = path.join(outputDir, "test-output.docx");
-    const arrayBuffer = await buffer.arrayBuffer();
-    fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
+        // Save the file for manual inspection
+        const outputPath = path.join(outputDir, "test-output.docx");
+        const arrayBuffer = await buffer.arrayBuffer();
+        fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
 
-    // Verify the buffer is not empty
-    const size = await buffer.size;
-    expect(size).toBeGreaterThan(0);
-  });
+        // Verify the buffer is not empty
+        const size = await buffer.size;
+        expect(size).toBeGreaterThan(0);
+    });
 
-  it("should handle TOC and Page Break markers", async () => {
-    const markdown = `
+    it("should handle TOC and Page Break markers", async () => {
+        const markdown = `
 [TOC]
 
 # Section 1
@@ -220,43 +218,46 @@ More content here.
 - List item 2
 `;
 
-    const options: Options = {
-      documentType: "document" as const,
-      style: {
-        // Use default or slightly modified styles for testing
-        titleSize: 30,
-        paragraphSize: 24,
-        lineSpacing: 1.15,
-        // Add missing required properties
-        headingSpacing: 240, // Default value
-        paragraphSpacing: 240, // Default value
-      },
-    };
+        const options: Options = {
+            documentType: "document" as const,
+            style: {
+                // Use default or slightly modified styles for testing
+                titleSize: 30,
+                paragraphSize: 24,
+                lineSpacing: 1.15,
+                // Add missing required properties
+                headingSpacing: 240, // Default value
+                paragraphSpacing: 240, // Default value
+            },
+        };
 
-    let buffer: Blob | null = null;
-    try {
-      buffer = await convertMarkdownToDocx(markdown, options);
-    } catch (error) {
-      // Fail the test if conversion throws an error
-      console.error("TOC/Page Break test failed during conversion:", error);
-      throw error; // Re-throw to make Jest aware of the failure
-    }
+        let buffer: Blob | null = null;
+        try {
+            buffer = await convertMarkdownToDocx(markdown, options);
+        } catch (error) {
+            // Fail the test if conversion throws an error
+            console.error(
+                "TOC/Page Break test failed during conversion:",
+                error,
+            );
+            throw error; // Re-throw to make Jest aware of the failure
+        }
 
-    // Verify the buffer is a valid Blob
-    expect(buffer).toBeInstanceOf(Blob);
-    const size = await buffer.size;
-    expect(size).toBeGreaterThan(0);
+        // Verify the buffer is a valid Blob
+        expect(buffer).toBeInstanceOf(Blob);
+        const size = await buffer.size;
+        expect(size).toBeGreaterThan(0);
 
-    // Save the file for manual inspection
-    const outputPath = path.join(outputDir, "test-toc-pagebreak.docx");
-    const arrayBuffer = await buffer.arrayBuffer();
-    fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
-    console.log("TOC/Page Break test output saved to:", outputPath);
-  });
+        // Save the file for manual inspection
+        const outputPath = path.join(outputDir, "test-toc-pagebreak.docx");
+        const arrayBuffer = await buffer.arrayBuffer();
+        fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
+        console.log("TOC/Page Break test output saved to:", outputPath);
+    });
 
-  it("should handle custom options with specific heading alignments", async () => {
-    console.log("Starting custom options test");
-    const markdown = `
+    it("should handle custom options with specific heading alignments", async () => {
+        console.log("Starting custom options test");
+        const markdown = `
 ## 1. Introduction
 
 Brain-Computer Interfaces (BCIs) represent a groundbreaking technology that facilitates direct communication between the human brain and external devices. This emerging field has vast implications for assistive technologies, healthcare, and neuroscience research.
@@ -276,42 +277,42 @@ The research design for this seminar report is primarily qualitative, utilizing 
 > Key findings suggest that BCIs have significant potential in medical applications.
 `;
 
-    const customOptions: Options = {
-      documentType: "report" as const,
-      style: {
-        titleSize: 40,
-        paragraphSize: 24,
-        headingSpacing: 480,
-        paragraphSpacing: 360,
-        lineSpacing: 1.5,
-        // Test all heading alignment options
-        heading1Alignment: "CENTER",
-        heading2Alignment: "RIGHT",
-        heading3Alignment: "LEFT",
-        paragraphAlignment: "JUSTIFIED",
-        blockquoteAlignment: "CENTER",
-      },
-    };
+        const customOptions: Options = {
+            documentType: "report" as const,
+            style: {
+                titleSize: 40,
+                paragraphSize: 24,
+                headingSpacing: 480,
+                paragraphSpacing: 360,
+                lineSpacing: 1.5,
+                // Test all heading alignment options
+                heading1Alignment: "CENTER",
+                heading2Alignment: "RIGHT",
+                heading3Alignment: "LEFT",
+                paragraphAlignment: "JUSTIFIED",
+                blockquoteAlignment: "CENTER",
+            },
+        };
 
-    console.log("Converting markdown with custom options");
-    const buffer = await convertMarkdownToDocx(markdown, customOptions);
-    console.log("Conversion complete, buffer size:", await buffer.size);
+        console.log("Converting markdown with custom options");
+        const buffer = await convertMarkdownToDocx(markdown, customOptions);
+        console.log("Conversion complete, buffer size:", await buffer.size);
 
-    // Save the file for manual inspection
-    const outputPath = path.join(outputDir, "custom-options-test.docx");
-    const arrayBuffer = await buffer.arrayBuffer();
-    fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
-    console.log("File saved to:", outputPath);
+        // Save the file for manual inspection
+        const outputPath = path.join(outputDir, "custom-options-test.docx");
+        const arrayBuffer = await buffer.arrayBuffer();
+        fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
+        console.log("File saved to:", outputPath);
 
-    // Verify the buffer is not empty
-    const size = await buffer.size;
-    expect(size).toBeGreaterThan(0);
-  });
+        // Verify the buffer is not empty
+        const size = await buffer.size;
+        expect(size).toBeGreaterThan(0);
+    });
 });
 
 describe("convertMarkdownToDocx with complex content", () => {
-  it("should convert markdown with various complex elements correctly", async () => {
-    const markdown = `
+    it("should convert markdown with various complex elements correctly", async () => {
+        const markdown = `
 ## Supporting Evidence
 
 Artificial intelligence's transformative impact is well-documented across multiple industries, supported by a wealth of empirical data, case studies, and expert insights. Here are some key pieces of evidence underpinning the claims made throughout this report:
@@ -330,26 +331,29 @@ Organizations adopting explainable AI frameworks report better regulatory compli
 
 "In sectors where decisions directly impact individuals' lives—like lending or hiring—transparency isn't just ethical; it's a regulatory requirement," notes Dr. Maria Lopez, Director of AI Ethics at the Global Institute for Responsible Innovation.
 `;
-    const blob = await convertMarkdownToDocx(markdown);
-    expect(blob).toBeInstanceOf(Blob);
-    expect(blob.type).toBe(
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    );
+        const blob = await convertMarkdownToDocx(markdown);
+        expect(blob).toBeInstanceOf(Blob);
+        expect(blob.type).toBe(
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        );
 
-    // Save the file for manual inspection
-    const outputPath = path.join(outputDir, "supporting-evidence-test.docx");
-    console.log("Saving complex content test output to:", outputPath);
-    const arrayBuffer = await blob.arrayBuffer();
-    fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
-    console.log("Complex content test output saved successfully.");
+        // Save the file for manual inspection
+        const outputPath = path.join(
+            outputDir,
+            "supporting-evidence-test.docx",
+        );
+        console.log("Saving complex content test output to:", outputPath);
+        const arrayBuffer = await blob.arrayBuffer();
+        fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
+        console.log("Complex content test output saved successfully.");
 
-    // Add more specific assertions if needed, e.g., by unpacking and inspecting the docx content
-  });
+        // Add more specific assertions if needed, e.g., by unpacking and inspecting the docx content
+    });
 });
 
 describe("List Functionality Tests", () => {
-  it("should correctly handle bullet points and numbered lists", async () => {
-    const markdown = `# Lists Test Document
+    it("should correctly handle bullet points and numbered lists", async () => {
+        const markdown = `# Lists Test Document
 
 ## Bullet Points Test
 - First bullet point
@@ -390,29 +394,32 @@ describe("List Functionality Tests", () => {
 1. Numbered list item
 2. Another numbered item`;
 
-    console.log("Testing bullet points and numbered lists...");
+        console.log("Testing bullet points and numbered lists...");
 
-    const docxBlob = await convertMarkdownToDocx(markdown);
+        const docxBlob = await convertMarkdownToDocx(markdown);
 
-    // Save the blob to a file for manual inspection
-    const buffer = await docxBlob.arrayBuffer();
-    const outputPath = path.join(outputDir, "lists-functionality-test.docx");
-    fs.writeFileSync(outputPath, Buffer.from(buffer));
+        // Save the blob to a file for manual inspection
+        const buffer = await docxBlob.arrayBuffer();
+        const outputPath = path.join(
+            outputDir,
+            "lists-functionality-test.docx",
+        );
+        fs.writeFileSync(outputPath, Buffer.from(buffer));
 
-    console.log(
-      `✅ Lists test completed successfully! File saved to: ${outputPath}`
-    );
+        console.log(
+            `✅ Lists test completed successfully! File saved to: ${outputPath}`,
+        );
 
-    // Verify the blob was created successfully
-    expect(docxBlob).toBeInstanceOf(Blob);
-    expect(docxBlob.size).toBeGreaterThan(0);
-    expect(docxBlob.type).toBe(
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    );
-  });
+        // Verify the blob was created successfully
+        expect(docxBlob).toBeInstanceOf(Blob);
+        expect(docxBlob.size).toBeGreaterThan(0);
+        expect(docxBlob.type).toBe(
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        );
+    });
 
-  it("should handle list resets and transitions", async () => {
-    const markdown = `# Advanced Lists Test
+    it("should handle list resets and transitions", async () => {
+        const markdown = `# Advanced Lists Test
 
 ## Sequential Numbered Lists (should reset)
 1. First list item
@@ -438,21 +445,21 @@ Some interrupting text here.
 - Bullet item 1 
 - Bullet item 2`;
 
-    console.log("Testing advanced list scenarios...");
+        console.log("Testing advanced list scenarios...");
 
-    const docxBlob = await convertMarkdownToDocx(markdown);
+        const docxBlob = await convertMarkdownToDocx(markdown);
 
-    // Save the blob to a file
-    const buffer = await docxBlob.arrayBuffer();
-    const outputPath = path.join(outputDir, "advanced-lists-test.docx");
-    fs.writeFileSync(outputPath, Buffer.from(buffer));
+        // Save the blob to a file
+        const buffer = await docxBlob.arrayBuffer();
+        const outputPath = path.join(outputDir, "advanced-lists-test.docx");
+        fs.writeFileSync(outputPath, Buffer.from(buffer));
 
-    console.log(
-      `✅ Advanced lists test completed! File saved to: ${outputPath}`
-    );
+        console.log(
+            `✅ Advanced lists test completed! File saved to: ${outputPath}`,
+        );
 
-    // Verify the blob was created successfully
-    expect(docxBlob).toBeInstanceOf(Blob);
-    expect(docxBlob.size).toBeGreaterThan(0);
-  });
+        // Verify the blob was created successfully
+        expect(docxBlob).toBeInstanceOf(Blob);
+        expect(docxBlob.size).toBeGreaterThan(0);
+    });
 });

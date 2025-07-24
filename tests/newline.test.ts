@@ -1,8 +1,8 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { convertMarkdownToDocx } from "../src";
-import { Options } from "../src/types";
-import * as fs from "fs";
-import * as path from "path";
-import { fileURLToPath } from "url";
+import type { Options } from "../src/types";
 
 // Get the directory name in ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -12,10 +12,9 @@ const __dirname = path.dirname(__filename);
 const outputDir = path.join(__dirname, "..", "test-output");
 fs.mkdirSync(outputDir, { recursive: true });
 
-
 describe("Markdown Newline Handling", () => {
-  it("should handle various newline scenarios correctly", async () => {
-    const markdown = `# Newline Test Document
+    it("should handle various newline scenarios correctly", async () => {
+        const markdown = `# Newline Test Document
 
 ## Regular Paragraphs
 This is a paragraph.
@@ -64,27 +63,27 @@ def function():
 \`\`\`
 Final paragraph.`;
 
-    const options: Options = {
-      documentType: "document",
-      style: {
-        titleSize: 32,
-        headingSpacing: 240,
-        paragraphSpacing: 240,
-        lineSpacing: 1.15,
-        paragraphAlignment: "LEFT",
-      },
-    };
+        const options: Options = {
+            documentType: "document",
+            style: {
+                titleSize: 32,
+                headingSpacing: 240,
+                paragraphSpacing: 240,
+                lineSpacing: 1.15,
+                paragraphAlignment: "LEFT",
+            },
+        };
 
-    // Convert markdown to docx
-    const buffer = await convertMarkdownToDocx(markdown, options);
+        // Convert markdown to docx
+        const buffer = await convertMarkdownToDocx(markdown, options);
 
-    // Save the file for manual inspection
-    const outputPath = path.join(outputDir, "newline-test.docx");
-    const arrayBuffer = await buffer.arrayBuffer();
-    fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
+        // Save the file for manual inspection
+        const outputPath = path.join(outputDir, "newline-test.docx");
+        const arrayBuffer = await buffer.arrayBuffer();
+        fs.writeFileSync(outputPath, Buffer.from(arrayBuffer));
 
-    // Verify the buffer is not empty
-    const size = await buffer.size;
-    expect(size).toBeGreaterThan(0);
-  });
+        // Verify the buffer is not empty
+        const size = await buffer.size;
+        expect(size).toBeGreaterThan(0);
+    });
 });
