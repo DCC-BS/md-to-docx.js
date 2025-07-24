@@ -29,7 +29,7 @@ jobs:
       - name: Install Bun
         run: npm install -g bun
       - run: bun install
-      - run: bun generate
+      - run: bun build
       - run: bun run prepack
       # - run: bun run test
       

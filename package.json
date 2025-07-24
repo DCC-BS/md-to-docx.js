@@ -10,7 +10,7 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.config.mjs",
     "test:single": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.config.mjs",
     "test:alignment": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.config.mjs src/heading-alignment.test.ts",
-    "prepare": "npm run build"
+    "prepare": "bun run build"
   },
   "keywords": [
     "markdown",
