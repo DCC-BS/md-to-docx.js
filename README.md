@@ -7,8 +7,9 @@ This is a fork form [md-to-docx](https://github.com/MohtashamMurshid/md-to-docx)
 To install this fork, use the following command:
 
 ```bash
-bun add git+https://github.com/DCC-BS/md-to-docx.js#v2.0.2
+bun add git+https://github.com/DCC-BS/md-to-docx.js#v3.0.0
 ```
+replace `v3.0.0` with the latest version tag: ![GitHub package.json version](https://img.shields.io/github/package-json/v/DCC-BS/md-to-docx.js)
 
 
 A powerful TypeScript module that converts Markdown text to Microsoft Word (.docx) documents with support for various Markdown features. Perfect for both Node.js and browser environments.
